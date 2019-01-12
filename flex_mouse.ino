@@ -20,22 +20,20 @@ void loop() {
   Serial.println("Activate Movement: " + String(activate_movement));
   Serial.println("Click: " + String(click));
   if (activate_movement < 150) {
-    // X
-    int x_flexADC = analogRead(X_FLEX_PIN);
-    float x_flexV = x_flexADC* VCC / 1023.0;
-    float x_flexR = R_DIV * (VCC / x_flexV - 1.0);
-    float x_angle = map(x_flexR, STRAIGHT_RESISTANCE, BEND_RESISTANCE, 0, 90.0);
-    int y_flexADC = analogRead(Y_FLEX_PIN);
-    // Y
-    float y_flexV = y_flexADC* VCC / 1023.0;
-    float y_flexR = R_DIV * (VCC / y_flexV - 1.0);
-    float y_angle = map(y_flexR, STRAIGHT_RESISTANCE, BEND_RESISTANCE, 0, 90.0);
-    Serial.println("X_Resistance : " + String(x_flexR) + " ohms");
-    Serial.println("X_Bend : " + String(x_angle) + " degrees");
-    Serial.println("Y_Resistance: " + String(y_flexR) + " ohms");
-    Serial.println("Y_Bend: " + String(y_angle) + " degrees");
+    float x_angle = getAngle(X_FLEX_PIN, "X");
+    float y_angle = getAngle(Y_FLEX_PIN, "Y");
   }
   Serial.println();
   delay(1000);
+}
+
+int getAngle(int PIN, String axis) {
+  int flexADC = analogRead(PIN);
+  float flexV = flexADC* VCC / 1023.0;
+  float flexR = R_DIV * (VCC / flexV - 1.0);
+  float angle = map(flexR, STRAIGHT_RESISTANCE, BEND_RESISTANCE, 0, 90.0);
+  Serial.println(String(axis) + "_RESISTANCE : " + String(flexR) + " ohms");
+  Serial.println(String(axis) + "_Bend : " + String(angle) + " degrees");
+  return angle;
 }
 
